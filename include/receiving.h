@@ -22,9 +22,9 @@ enum receiveStatus {
 };
 typedef struct bufState {
 	char* buffer;
-	int buf_size;
-	int full_len;
-	int next_start;
+	const size_t capacity;
+	int used;
+	int offset;
 } bufState;
 typedef struct reqParams {
 	char host[256];
@@ -43,6 +43,6 @@ void* TheMemmem(const void* needle, const void* haystack, size_t needlelen, size
 
 int MoveSection(bufState* bufState, void* dest, size_t dest_len);
 
-int CompactBuffer(bufState* buf, size_t len);
+int CompactBuffer(bufState* buf);
 
 #endif

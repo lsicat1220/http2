@@ -54,21 +54,27 @@ int main() {
 		keepAlive = 1;
 		while (keepAlive) {
 			bufState buffer_state = {readBuffer, BUFFER_SIZE, 0, 0};
+			char method[1024];
+			char headers[1024];
 			int readStatus = ReceiveSection(clientSocket, &buffer_state, "\r\n", 2); 
-			char section1[1024];
 			if (readStatus < 0) {
 				HandleReadError(readStatus);
 				break;
 			}
-			int sectionlen = MoveSection(&buffer_state, section1, 1024);	
-			CompactBuffer(&buffer_state, buffer_state.full_len - sectionlen);
-			printf("Section:\n");
-			fwrite(section1, sizeof(char), sectionlen, stdout);
+			int methodlen = MoveSection(&buffer_state, method, 1024);	
+			CompactBuffer(&buffer_state);
+			readStatus = ReceiveSection(clientSocket, &buffer_state, "\r\n\r\n", 4);
+			if (readStatus < 0) {
+				HandleReadError(readStatus);
+				break;
+			}
+			int headerslen = MoveSection(&buffer_state, headers, buffer_state.used - 1024);
+			CompactBuffer(&buffer_state);
+			printf("Method:\n");
+			fwrite(method, sizeof(char), methodlen, stdout);
 			printf("\n\n");
-			printf("Remaining buffer:\n");
-			fwrite(buffer_state.buffer, sizeof(char), buffer_state.next_start - 1, stdout);
-			printf("\n");
-			printf("Starting request parsing...\n");
+			printf("Headers:\n");
+			fwrite(headers, sizeof(char), headerslen, stdout);
 			keepAlive = 0;
 		}
 

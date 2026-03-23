@@ -8,38 +8,41 @@
 
 #define NODEBUG
 
-// This function returns the bytes read up to the first character of the target
-// The full amount of bytes read is stored in the bytes_read pointer
+// This function edits a buf_state struct, which includes the buffer itself,
+// the total amount of the bytes read, and the length of the most recent section received.
+
+// next_start refers to amount of bytes from the start of the buffer the 
+// next call of this function should start at.
 int ReceiveSection(int fd, bufState* buf_state, char* target, int target_size) {
 	int newRead;
 	int offset;
 	int status = 0;
 	char* buffer = buf_state->buffer;
-	int* bytes_read = &(buf_state->full_len);
-	int buf_size = buf_state->buf_size;
-	char* ptr = buffer + buf_state->next_start;
-	char* occurrence = TheMemmem(target, ptr, target_size, *bytes_read - (ptr - buffer));
-	while (!occurrence && *bytes_read < buf_size) {
-		newRead = read(fd, buffer + *bytes_read, buf_size - *bytes_read);
+	int* used = &(buf_state->used);
+	const size_t capacity = buf_state->capacity;
+	char* pos = buffer + buf_state->offset;
+	char* occurrence = TheMemmem(target, pos, target_size, *used - (pos - buffer));
+	while (!occurrence && *used < capacity) {
+		newRead = read(fd, buffer + *used, capacity - *used);
 		if (newRead < 0) {
 			status = ERR_SOCKET_FAILED; //read failed
 			break;
 		} else if (newRead == 0) {
-			if (*bytes_read) {
+			if (*used) {
 				status = ERR_READ_INTERRUPTED; //read interrupted or ended prematurely
 			} else {
 				status = ERR_NO_DATA; //read ended with no data
 			}
 			break;
 		}
-		*bytes_read += newRead;
-		if (ptr - buffer < target_size - 1) {
-			offset = ptr - buffer;
+		*used += newRead;
+		if (pos - buffer < target_size - 1) {
+			offset = pos - buffer;
 		} else {
 			offset = target_size - 1;
 		}
-		occurrence = TheMemmem(target, ptr - offset, target_size, newRead + offset);
-		ptr = buffer + *bytes_read;
+		occurrence = TheMemmem(target, pos - offset, target_size, newRead + offset);
+		pos = buffer + *used;
 	} 
 #ifdef DEBUG
 	printf("Data read:\n%s\n", (char*) buffer);
@@ -48,7 +51,7 @@ int ReceiveSection(int fd, bufState* buf_state, char* target, int target_size) {
 		if (!occurrence) {
 			status = ERR_BUFFER_FULL; //ran out of space, no headers
 		} else {
-			buf_state->next_start = (occurrence + target_size) - buffer;
+			buf_state->offset = (occurrence + target_size) - buffer;
 		}
 	}	
 	return status;  
@@ -97,8 +100,9 @@ void* TheMemmem(const void* needle, const void* haystack, size_t needlelen, size
 	return ret;
 }
 
+// This is a simple function that takes data stored in bufState to move the most recent section to a new string
 int MoveSection(bufState* bufState, void* dest, size_t dest_len) {
-	int sectionLen = bufState->next_start - 1;
+	int sectionLen = bufState->offset - 1;
 	if (sectionLen > dest_len) {
 		fputs("ERROR: Attempt to move data to a smaller buffer", stderr);
 		return 0;
@@ -107,9 +111,13 @@ int MoveSection(bufState* bufState, void* dest, size_t dest_len) {
 	return sectionLen;
 }
 
-int CompactBuffer(bufState* buf, size_t len) {
-	memmove(buf->buffer, buf->buffer + buf->next_start, len);
-	buf->next_start = 0;	
-	memset(buf->buffer + len, 0, buf->buf_size - len);
+// This function shifts the buffer such that the beginning of the buffer is now 
+// the position refered to by bufState.offset
+int CompactBuffer(bufState* buf) {
+	int len = buf->used -= buf->offset;
+	memmove(buf->buffer, buf->buffer + buf->offset, len);
+	buf->used = len;
+	buf->offset = 0;	
+	memset(buf->buffer + len, 0, buf->capacity - len);
 	return 0;
 }
