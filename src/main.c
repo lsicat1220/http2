@@ -5,7 +5,7 @@
 #include <netinet/in.h>
 #include <sys/time.h>
 #include <string.h>
-#include "receiving.h"
+#include "../include/receiving.h"
 
 #define PORT 6767
 #define BUFFER_SIZE 8192
