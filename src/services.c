@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include "../include/receiving.h"
 #include "../include/services.h"
+#include "../include/parsing.h"
 #define BUFFER_SIZE 8192
 
 void HandleConnection(int clientSocket) {
@@ -11,27 +12,21 @@ void HandleConnection(int clientSocket) {
 	char responseBuffer[BUFFER_SIZE];
 	while (keepAlive) {
 		bufState buffer_state = {readBuffer, BUFFER_SIZE, 0, 0};
-		char method[1024];
-		char headers[1024];
-		int readStatus = ReadUntil(clientSocket, &buffer_state, "\r\n", 2); 
+		Slice request;
+		Slice headers[50];
+		int readStatus = ReadUntil(clientSocket, &buffer_state, "\r\n\r\n", 4);
 		if (readStatus < 0) {
 			HandleReadError(readStatus);
 			break;
 		}
-		int methodlen = MoveSection(&buffer_state, method, 1024);	
-		CompactBuffer(&buffer_state);
-		readStatus = ReadUntil(clientSocket, &buffer_state, "\r\n\r\n", 4);
-		if (readStatus < 0) {
-			HandleReadError(readStatus);
+		// by now the buffer should have all of the headers
+		if (GetSlice(&buffer_state, &request, "\r\n", 2)) {
 			break;
 		}
-		int headerslen = MoveSection(&buffer_state, headers, buffer_state.used - 1024);
-		CompactBuffer(&buffer_state);
-		printf("Method:\n");
-		fwrite(method, sizeof(char), methodlen, stdout);
-		printf("\n\n");
-		printf("Headers:\n");
-		fwrite(headers, sizeof(char), headerslen, stdout);
+		printf("Headers: \n");
+		fwrite(request.start, request.len, sizeof(char), stdout);
+		printf("\n\nThe Rest:\n");
+		fwrite(buffer_state.buffer + buffer_state.offset, BUFFER_SIZE - buffer_state.offset, sizeof(char), stdout);
 		keepAlive = 0;
 	}
 	snprintf(responseBuffer, BUFFER_SIZE, "HTTP/1.0 200 OK\r\n\r\n");
