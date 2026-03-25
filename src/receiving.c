@@ -47,12 +47,8 @@ int ReadUntil(int fd, bufState* buf_state, char* target, int target_size) {
 #ifdef DEBUG
 	printf("Data read:\n%s\n", (char*) buffer);
 #endif
-	if (status == 0) {
-		if (!occurrence) {
-			status = ERR_BUFFER_FULL; //ran out of space, no headers
-		} else {
-			buf_state->offset = (occurrence + target_size) - buffer;
-		}
+	if (status == 0 && !occurrence) {
+		status = ERR_BUFFER_FULL; //ran out of space, no headers
 	}	
 	return status;  
 }
