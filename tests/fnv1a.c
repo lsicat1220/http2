@@ -10,7 +10,7 @@ int main() {
 	const int total = 100;
 	const int map_size = round(total / 0.75);
 	int collisions = 0;
-	unsigned long hash;
+	unsigned int hash;
 	unsigned char map[map_size];
 	memset(map, 0, map_size);
 	size_t size;

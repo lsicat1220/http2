@@ -8,7 +8,7 @@ typedef struct {
 
 int GetSlice(bufState* buf_state, Slice* slice, const char* delim, const int delim_len);
 
-unsigned long Hash(void* input, size_t size);
+unsigned int Hash(void* input, size_t size);
 
 
 

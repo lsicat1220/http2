@@ -16,10 +16,10 @@ int GetSlice(bufState* buf_state, Slice* slice, const char* delim, const int del
 	return 0;
 }
 
-unsigned long Hash(void* input, size_t size) {
-	const unsigned long FNV_offset_basis = 0xcbf29ce484222325;
-	const unsigned long FNV_prime = 0x100000001b3;
-	unsigned long hash = FNV_offset_basis;
+unsigned int Hash(void* input, size_t size) {
+	const unsigned int FNV_prime = 0x01000193;
+	const unsigned int FNV_offset_basis = 0x811c9dc5;
+	unsigned int hash = FNV_offset_basis;
 	unsigned char* data = input;
 	for (int i = 0; i < size; i++) {
 		hash ^= data[i];
