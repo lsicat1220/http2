@@ -35,7 +35,7 @@ typedef struct reqParams {
 	char filepath[256];
 } reqParams;
 
-int ReceiveSection(int fd, bufState* buf_state, char* target, int target_size);
+int ReadUntil(int fd, bufState* buf_state, char* target, int target_size);
 
 void HandleReadError(enum receiveStatus status);
 

@@ -13,7 +13,7 @@
 
 // next_start refers to amount of bytes from the start of the buffer the 
 // next call of this function should start at.
-int ReceiveSection(int fd, bufState* buf_state, char* target, int target_size) {
+int ReadUntil(int fd, bufState* buf_state, char* target, int target_size) {
 	int newRead;
 	int offset;
 	int status = 0;

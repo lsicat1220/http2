@@ -56,14 +56,14 @@ int main() {
 			bufState buffer_state = {readBuffer, BUFFER_SIZE, 0, 0};
 			char method[1024];
 			char headers[1024];
-			int readStatus = ReceiveSection(clientSocket, &buffer_state, "\r\n", 2); 
+			int readStatus = ReadUntil(clientSocket, &buffer_state, "\r\n", 2); 
 			if (readStatus < 0) {
 				HandleReadError(readStatus);
 				break;
 			}
 			int methodlen = MoveSection(&buffer_state, method, 1024);	
 			CompactBuffer(&buffer_state);
-			readStatus = ReceiveSection(clientSocket, &buffer_state, "\r\n\r\n", 4);
+			readStatus = ReadUntil(clientSocket, &buffer_state, "\r\n\r\n", 4);
 			if (readStatus < 0) {
 				HandleReadError(readStatus);
 				break;
