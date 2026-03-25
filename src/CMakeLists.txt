@@ -1,5 +1,6 @@
 add_library(core_logic STATIC
 	./receiving.c
+	./services.c
 )
 
 target_include_directories(core_logic PUBLIC ../include)

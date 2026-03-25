@@ -6,6 +6,7 @@
 #include <sys/time.h>
 #include <string.h>
 #include "../include/receiving.h"
+#include "../include/services.h"
 
 #define PORT 6767
 #define BUFFER_SIZE 8192
@@ -13,10 +14,6 @@
 
 int main() {
 	printf("Starting server...\n");
-	int keepAlive = 1;
-
-	char readBuffer[BUFFER_SIZE];
-	char responseBuffer[BUFFER_SIZE];
 
 	struct sockaddr_in addr;
 	int newSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -50,37 +47,6 @@ int main() {
 			printf("NONFATAL ERROR: Unable to accept socket; discarding...\n");
 			continue;
 		}
-		printf("\n\n----- CONNECTION ACCEPTED -----\n\n");
-		keepAlive = 1;
-		while (keepAlive) {
-			bufState buffer_state = {readBuffer, BUFFER_SIZE, 0, 0};
-			char method[1024];
-			char headers[1024];
-			int readStatus = ReadUntil(clientSocket, &buffer_state, "\r\n", 2); 
-			if (readStatus < 0) {
-				HandleReadError(readStatus);
-				break;
-			}
-			int methodlen = MoveSection(&buffer_state, method, 1024);	
-			CompactBuffer(&buffer_state);
-			readStatus = ReadUntil(clientSocket, &buffer_state, "\r\n\r\n", 4);
-			if (readStatus < 0) {
-				HandleReadError(readStatus);
-				break;
-			}
-			int headerslen = MoveSection(&buffer_state, headers, buffer_state.used - 1024);
-			CompactBuffer(&buffer_state);
-			printf("Method:\n");
-			fwrite(method, sizeof(char), methodlen, stdout);
-			printf("\n\n");
-			printf("Headers:\n");
-			fwrite(headers, sizeof(char), headerslen, stdout);
-			keepAlive = 0;
-		}
-
-		snprintf(responseBuffer, BUFFER_SIZE, "HTTP/1.0 200 OK\r\n\r\n");
-		write(clientSocket, responseBuffer, 19);
-		printf("\n\n----- CONNECTION CLOSED -----\n\n");
-		close(clientSocket);
+		HandleConnection(clientSocket);	
 	}
 }
