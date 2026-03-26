@@ -21,6 +21,7 @@ int MapSet(mapNode** map, size_t map_size, mapNode* node);
 
 mapNode* MapGet(mapNode** map, size_t map_size, void* key, size_t key_size);
 
+int SplitSlice(Slice* input, Slice* outputs, int num_outputs, char* delim, size_t delim_len);
 
 
 #endif
