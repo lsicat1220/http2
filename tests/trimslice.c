@@ -7,11 +7,12 @@ int main() {
 	Slice slice;
 	for (int i = 0; i < num_tests; i++) {
 		InitSlice(&slice, tests[i]);
-		printf("Initial string: ");
+		printf("Initial string: \"");
 		fwrite(slice.start, 1, slice.len, stdout);
-		printf("\n");
+		printf("\"\n");
 		TrimSlice(&slice);
-		printf("Trimmed string: ");
+		printf("Trimmed string: \"");
 		fwrite(slice.start, 1, slice.len, stdout);
+		printf("\"\n");
 	}
 }
