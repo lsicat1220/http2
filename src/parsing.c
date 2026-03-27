@@ -2,6 +2,7 @@
 #include <string.h>
 #include "../include/parsing.h"
 #include "../include/receiving.h"
+#include "../include/utils.h"
 
 int GetSlice(bufState* buf_state, Slice* slice, const char* delim, const int delim_len) {
 	char* start = buf_state->buffer + buf_state->offset;

@@ -39,7 +39,6 @@ int ReadUntil(int fd, bufState* buf_state, char* target, int target_size);
 
 void HandleReadError(enum receiveStatus status);
 
-void* TheMemmem(const void* needle, const void* haystack, size_t needlelen, size_t haystacklen);
 
 int MoveSection(bufState* bufState, void* dest, size_t dest_len);
 

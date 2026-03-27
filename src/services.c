@@ -13,7 +13,6 @@ void HandleConnection(int clientSocket) {
 	while (keepAlive) {
 		bufState buffer_state = {readBuffer, BUFFER_SIZE, 0, 0};
 		Slice request;
-		Slice headers[50];
 		int readStatus = ReadUntil(clientSocket, &buffer_state, "\r\n\r\n", 4);
 		if (readStatus < 0) {
 			HandleReadError(readStatus);
