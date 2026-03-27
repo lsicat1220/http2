@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "receiving.h"
+#include "../include/receiving.h"
 
 int main() {
 	char buffer[1024];
@@ -8,15 +8,15 @@ int main() {
 	strcpy(buffer, "Hello goodbye yadayadayada good news to you hello hahahahahaha end");
 	bufState buf = {
 		.buffer = buffer,
-		.buf_size = 1024,
-		.full_len = strlen(buffer),
-		.next_start = 14
+		.capacity = 1024,
+		.used = strlen(buffer),
+		.offset = 14
 	};
-	printf("Intended next start: %s\n", buffer + buf.next_start);
+	printf("Intended next start: %s\n", buffer + buf.offset);
 	int seclen = MoveSection(&buf, dest, 128);
 	printf("Section moved: \n");
 	fwrite(dest, sizeof(char), seclen, stdout);
 	printf("\nRemaining data:\n");
-	fwrite(buffer, sizeof(char), buf.next_start, stdout);
+	fwrite(buffer, sizeof(char), buf.offset, stdout);
 	return 0;
 }
