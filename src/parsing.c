@@ -54,7 +54,7 @@ void TrimSlice(Slice* input) {
 	}
 	input->start = cursor;
 
-	cursor = input->start + input->len;
+	cursor = input->start + input->len - 1;
 	while (*cursor == ' ' && cursor - input->start > 0) {
 		cursor--;
 		input->len--;
