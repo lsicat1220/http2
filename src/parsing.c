@@ -45,5 +45,19 @@ int SplitSlice(Slice* input, Slice* outputs, int num_outputs, char* delim, size_
 	}
 	return occurences;
 }
+// 0 1 2 3 4 5 6 7 8 9
+void TrimSlice(Slice* input) {
+	char* cursor = input->start;
+	while (*cursor == ' ' && cursor - input->start + 1 < input->len) {
+		cursor++;	
+		input->len--;
+	}
+	input->start = cursor;
 
+	cursor = input->start + input->len;
+	while (*cursor == ' ' && cursor - input->start > 0) {
+		cursor--;
+		input->len--;
+	}
 
+}

@@ -13,5 +13,6 @@ int GetSlice(bufState* buf_state, Slice* slice, const char* delim, const int del
 
 int SplitSlice(Slice* input, Slice* outputs, int num_outputs, char* delim, size_t delim_len);
 
+void TrimSlice(Slice* input);
 
 #endif
