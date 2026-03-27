@@ -4,6 +4,11 @@
 #include "../include/receiving.h"
 #include "../include/utils.h"
 
+void InitSlice(Slice* new_slice, char* input) {
+	new_slice->start = input;
+	new_slice->len = strlen(input);
+}
+
 int GetSlice(bufState* buf_state, Slice* slice, const char* delim, const int delim_len) {
 	char* start = buf_state->buffer + buf_state->offset;
 	int max_len = buf_state->capacity - buf_state->offset;

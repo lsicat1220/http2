@@ -6,6 +6,7 @@ typedef struct {
 	int len;
 } Slice;
 
+void InitSlice(Slice* new_slice, char* input);
 
 int GetSlice(bufState* buf_state, Slice* slice, const char* delim, const int delim_len);
 
