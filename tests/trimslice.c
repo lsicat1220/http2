@@ -1,8 +1,8 @@
-#include "../include/parsing.h"
+#include "../include/slice.h"
 #include <stdio.h>
 
 int main() {
-	char tests[][64] = {"   this is a test   ", "the second test   ", "this shouldn't change"};
+	char tests[][64] = {"   this is a test   ", "the second test   ", "this shouldn't change", "        "};
 	int num_tests = sizeof(tests) / 64;
 	Slice slice;
 	for (int i = 0; i < num_tests; i++) {

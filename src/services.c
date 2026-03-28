@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include "../include/receiving.h"
 #include "../include/services.h"
-#include "../include/parsing.h"
+#include "../include/slice.h"
 #define BUFFER_SIZE 8192
 
 void HandleConnection(int clientSocket) {

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "receiving.h"
+#include "../include/receiving.h"
 
 typedef struct sectionTest {
 	const char* data;
@@ -78,17 +78,17 @@ int main() {
 	};
 	for (int i = 0; i < sizeof(tests) / sizeof(sectionTest); i++) {
 		printf("\r----Test %d----\n", i);
-		int status = ReceiveSection(i, &bufstate, "\r\n", 2);
+		int status = ReadUntil(i, &bufstate, "\r\n", 2);
 		if (status < 0) {
 			HandleReadError(status);
 		} else {
 			printf("Read success!\n");
 		}
 		printf("Full buffer {\n");
-		fwrite(buffer, 1, bufstate.full_len, stdout);
+		fwrite(buffer, 1, bufstate.used, stdout);
 		printf("\n}\n");
 		printf("Data after next_start {\n");
-		fwrite(buffer + bufstate.next_start, 1, bufstate.full_len - bufstate.next_start, stdout);
+		fwrite(buffer + bufstate.offset, 1, bufstate.used - bufstate.offset, stdout);
 		printf("\n}\n");
 		memset(buffer, 0, 8192);
 	}
