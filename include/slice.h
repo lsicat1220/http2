@@ -1,5 +1,5 @@
 #include "../include/receiving.h"
-#ifndef PARSING_H
+#ifndef SLICE_H
 
 typedef struct {
 	char* start;

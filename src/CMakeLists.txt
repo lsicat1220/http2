@@ -1,7 +1,7 @@
 add_library(core_logic STATIC
 	./receiving.c
 	./services.c
-	./parsing.c
+	./slice.c
 	./map.c
 	./utils.c
 )
