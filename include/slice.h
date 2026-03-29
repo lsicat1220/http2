@@ -1,6 +1,6 @@
 #include "../include/receiving.h"
 #ifndef SLICE_H
-
+#define SLICE_H
 typedef struct {
 	char* start;
 	int len;

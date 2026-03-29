@@ -26,14 +26,6 @@ typedef struct bufState {
 	int used;
 	int offset;
 } bufState;
-typedef struct reqParams {
-	char host[256];
-	int keepAlive;
-	int method;
-	int httpVersion;
-	int contentLength;
-	char filepath[256];
-} reqParams;
 
 int ReadUntil(int fd, bufState* buf_state, char* target, int target_size);
 
