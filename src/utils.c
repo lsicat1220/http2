@@ -29,3 +29,14 @@ void* TheMemmem(const void* needle, const void* haystack, size_t needlelen, size
 	}
 	return ret;
 }
+
+char* ResolvePath(const char* input, char* output) {
+#ifdef _WIN32	
+	return _fullpath(output, input, _MAX_PATH);
+	//i hate windows i hate windows i hate windows i hate windows
+	//if this is not how their version works then so be it ill figure it out some other time
+#else
+	return realpath(input, output);
+#endif
+}
+
