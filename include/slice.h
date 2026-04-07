@@ -15,4 +15,6 @@ int SplitSlice(Slice* input, Slice* outputs, int num_outputs, char* delim, size_
 
 void TrimSlice(Slice* input);
 
+int SliceToStr(char* dest, Slice* slice, size_t dest_len);
+
 #endif

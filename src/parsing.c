@@ -28,14 +28,5 @@ int GetVersion(Slice *version) {
 	return -1;
 }
 
-int SliceToStr(char* dest, Slice* slice, size_t dest_len) {
-	if (dest_len < slice->len) {
-		fprintf(stderr, "ERROR: Size of destination less than slice length\n");
-		return -1;
-	}
-	memcpy(dest, slice->start, slice->len);
-	dest[slice->len] = 0;
-	return 0;
-}
 
 
