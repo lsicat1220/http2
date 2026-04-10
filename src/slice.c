@@ -66,6 +66,8 @@ int SliceToStr(char* dest, Slice* slice, size_t dest_len) {
 	if (dest_len < slice->len) {
 		fprintf(stderr, "ERROR: Size of destination less than slice length\n");
 		return -1;
+	} else if (!dest || !slice || !dest_len) {
+		fprintf(stderr, "ERROR: Parameters invalid\n");
 	}
 	memcpy(dest, slice->start, slice->len);
 	dest[slice->len] = 0;
